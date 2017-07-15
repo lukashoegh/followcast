@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/lukashoegh/followcast/issues"
   },
-  "homepage": "https://github.com/lukashoegh/followcast#readme"
+  "homepage": "https://github.com/lukashoegh/followcast#readme",
+  "dependencies": {
+    "moviedb": "^0.2.8"
+  }
 }
