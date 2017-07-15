@@ -1,0 +1,19 @@
+{
+  "name": "followcast",
+  "version": "1.0.0",
+  "description": "Follow film cast and crew for updates from themoviedb.org",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukashoegh/followcast.git"
+  },
+  "author": "Lukas Knudsen Høgh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lukashoegh/followcast/issues"
+  },
+  "homepage": "https://github.com/lukashoegh/followcast#readme"
+}
