@@ -17,6 +17,14 @@
   },
   "homepage": "https://github.com/lukashoegh/followcast#readme",
   "dependencies": {
-    "moviedb": "^0.2.8"
+    "lodash": "^4.17.4",
+    "nedb": "^1.8.0",
+    "readline-sync": "^1.4.7"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.69",
+    "@types/nedb": "^1.8.3",
+    "@types/node": "^8.0.13",
+    "@types/readline-sync": "^1.4.2"
   }
 }
