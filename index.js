@@ -143,6 +143,16 @@ function handleFindPersonConfirmation(c, person, results) {
 function addPerson(person) {
     console.log("Adding " + person.name + " to your list.");
     getCredits(person.id, function (credits) {
+        console.log('Newest credits:');
+        var sortedCredits = _.slice(_.orderBy(credits, [
+            function (credit) { return _.split(getDate(credit), '-')[0]; },
+            function (credit) { return _.split(getDate(credit), '-')[1]; },
+            function (credit) { return _.split(getDate(credit), '-')[2]; },
+        ], ['desc', 'desc', 'desc']), 0, 3);
+        for (var _i = 0, sortedCredits_1 = sortedCredits; _i < sortedCredits_1.length; _i++) {
+            var credit = sortedCredits_1[_i];
+            displayCredit(credit);
+        }
         credits = _.map(credits, parseCredit);
         db.insert({
             _id: person.id,
@@ -225,7 +235,7 @@ function clearAndReturn() {
     readline.cursorTo(process.stdout, 0);
 }
 function displayCredit(credit) {
-    var date = (credit.first_air_date === undefined) ? credit.release_date : credit.first_air_date;
+    var date = getDate(credit);
     if (credit.character !== undefined) {
         if (credit.character == '') {
             console.log("Appeared in " + getTitleOrName(credit) + " (on " + date + ").");
@@ -237,6 +247,9 @@ function displayCredit(credit) {
     else {
         console.log(credit.job + " for " + getTitleOrName(credit) + " (on " + date + ").");
     }
+}
+function getDate(credit) {
+    return (credit.first_air_date === undefined) ? credit.release_date : credit.first_air_date;
 }
 function requestRemovePersonInput() {
     console.log('Who do you want to remove?');

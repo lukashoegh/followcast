@@ -157,6 +157,16 @@ function handleFindPersonConfirmation(c: string, person: any, results: any) {
 function addPerson(person: any) {
   console.log(`Adding ${person.name} to your list.`);
   getCredits(person.id, (credits: any) => {
+    console.log('Newest credits:');
+    let sortedCredits = _.slice(_.orderBy(credits, [
+      (credit) => _.split(getDate(credit), '-')[0],
+      (credit) => _.split(getDate(credit), '-')[1],
+      (credit) => _.split(getDate(credit), '-')[2],
+    ], ['desc', 'desc', 'desc']), 0, 3);
+    for(let credit of sortedCredits) {
+      displayCredit(credit);
+    }
+
     credits = _.map(credits, parseCredit);
     db.insert({
       _id: person.id,
@@ -245,7 +255,7 @@ function clearAndReturn() {
 }
 
 function displayCredit(credit) {
-  let date = (credit.first_air_date === undefined) ? credit.release_date : credit.first_air_date;
+  let date = getDate(credit);
   if (credit.character !== undefined) {
     if (credit.character == '') {
       console.log(`Appeared in ${getTitleOrName(credit)} (on ${date}).`);
@@ -257,6 +267,10 @@ function displayCredit(credit) {
   else {
     console.log(`${credit.job} for ${getTitleOrName(credit)} (on ${date}).`);
   }
+}
+
+function getDate(credit) {
+  return (credit.first_air_date === undefined) ? credit.release_date : credit.first_air_date;
 }
 
 function requestRemovePersonInput() {
