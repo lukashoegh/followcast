@@ -13,19 +13,35 @@ db.loadDatabase((error) => {
     console.log('If the problem persists, try deleting data.db');
   }
   else {
-    requestMainMenuInput();
+    isAutocheckingEnabled((enabled) => {
+      enabled ?
+        checkForNewCredits() :
+        requestMainMenuInput();
+    });
   }
 });
 
 const mainMenuOptions = {
   hideEchoBack: true,
   mask: '',
-  limit: 'fcqrl',
+  limit: 'fcqrla',
 };
+let autochecking = false;
+
+function getMainMenuStrings() {
+  return [
+    '(f)ind person',
+    '(c)heck for new credits',
+    '(r)emove person',
+    '(l)ist people',
+    (autochecking)? 'disable (a)utochecking' : 'enable (a)utochecking',
+    '(q)uit'
+  ];
+}
 
 function requestMainMenuInput() {
   console.log('Choose an option:')
-  console.log('(f)ind person, (c)heck for new credits, (r)emove person, (l)ist people, (q)uit');
+  console.log(_.join(getMainMenuStrings(), ', '));
   let c = readlineSync.keyIn('', mainMenuOptions);
   handleMainMenuInput(c);
 }
@@ -44,6 +60,9 @@ function handleMainMenuInput(c: string) {
       break;
     case 'l':
       listPeople();
+      break;
+    case 'a':
+      toggleAutochecking();
       break;
     default:
       break;
@@ -179,7 +198,7 @@ function parseCredit(credit: any) {
 }
 
 function checkForNewCredits() {
-  db.find({}, (error, docs) => {
+  db.find({name: {$exists: true} }, (error, docs) => {
     if (docs.length === 0) {
       console.log('Your list is empty! You have to add some people before you check for new credits.');
       return requestMainMenuInput();
@@ -301,10 +320,28 @@ function removePerson(person) {
 
 function listPeople() {
   console.log('The following people are in your list:');
-  db.find({}, (error, docs) => {
+  db.find({ name: {$exists: true}}, (error, docs) => {
     for (let person of docs) {
       console.log(person.name);
     }
+    requestMainMenuInput();
+  });
+}
+
+function isAutocheckingEnabled(callback) {
+  db.find({ autochecking: true }, (error, docs) => {
+    autochecking = (docs.length !== 0);
+    callback(autochecking);
+  });
+}
+
+function toggleAutochecking() {
+  db.update({ autochecking: autochecking }, { autochecking: !autochecking }, {}, (error, numReplaced) => {
+    if (numReplaced === 0) {
+      db.insert({ autochecking: true });
+    }
+    autochecking = !autochecking;
+    console.log(`Autochecking has been ${autochecking? 'enabled' : 'disabled'}.`);
     requestMainMenuInput();
   });
 }
