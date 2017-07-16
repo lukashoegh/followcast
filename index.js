@@ -294,6 +294,10 @@ function removePerson(person) {
 function listPeople() {
     console.log('The following people are in your list:');
     db.find({ name: { $exists: true } }, function (error, docs) {
+        docs = _.sortBy(docs, [
+            function (person) { return _.last(_.split(person.name, ' ')); },
+            function (person) { return person.name; }
+        ]);
         for (var _i = 0, docs_1 = docs; _i < docs_1.length; _i++) {
             var person = docs_1[_i];
             console.log(person.name);
